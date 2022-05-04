@@ -1,0 +1,106 @@
+service: api-tecnogest
+frameworkVersion: '3'
+
+plugins:
+  - serverless-plugin-warmup-ts-bridge-v2
+  - serverless-plugin-warmup
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  - serverless-offline-dotenv
+  - serverless-offline
+  - serverless-plugin-git-variables
+  - serverless-prune-plugin
+
+package:
+  patterns:
+    - '!.build/**'
+
+resources:
+  - ${file(src/resources/_infra/cognito.yml)}
+
+
+
+custom:
+  serverless-offline-dotenv:
+      path: .env
+  warmup:
+    default:
+      enabled: true
+      events:
+        - schedule: rate(5 minutes)
+      prewarm: true
+  prune:
+    automatic: true
+    number: 2
+  stages:
+    development:
+      log_level: INFO
+      envTag: development
+      accessKeyId: ${env:accessKeyId}
+      secretAccessKey: ${env:secretAccessKey}
+      clientPoolId: ${env:clientPoolId}
+      poolId: ${env:poolId}
+      DB_NAME: ${env:DB_NAME}
+      DB_PASSWORD: ${env:DB_PASSWORD}
+      DB_HOST: ${env:DB_HOST}
+      DB_USER: ${env:DB_USER}
+      DB_PORT: ${env:DB_PORT}
+      COGNITO_ROLE_ARN: ${env:COGNITO_ROLE_ARN}
+  serverless-offline:
+    allowCache: true
+    noPrependStageInUrl: true
+    noAuth: true
+    noTimeout: false
+    printOutput: true
+    useWorkerThreads: true
+    httpPort: 5000
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  apiName: api-tecnogest-${self:provider.stage}
+  stage: ${opt:stage, 'development'}
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+  memorySize: 256
+  logRetentionInDays: 14
+  logs:
+    restApi:
+      level: INFO
+  tracing:
+    apiGateway: true
+    lambda: true
+  environment:
+    hash_git: ${git:sha1}
+    api_version: "1.0"
+    accessKeyId: ${self:custom.stages.${opt:stage}.accessKeyId}
+    secretAccessKey: ${self:custom.stages.${opt:stage}.secretAccessKey}
+    clientPoolId: ${self:custom.stages.${opt:stage}.clientPoolId}
+    poolId: ${self:custom.stages.${opt:stage}.poolId}
+    DB_NAME: ${self:custom.stages.${opt:stage}.DB_NAME}
+    DB_PASSWORD: ${self:custom.stages.${opt:stage}.DB_PASSWORD}
+    DB_HOST: ${self:custom.stages.${opt:stage}.DB_HOST}
+    DB_USER: ${self:custom.stages.${opt:stage}.DB_USER}
+    cognito_role_arn: ${self:custom.stages.${opt:stage}.COGNITO_ROLE_ARN}
+    region: us-east-1
+    NODE_ENV: ${self:custom.stages.${self:provider.stage}.envTag}
+  stackTags:
+    Environment: ${self:custom.stages.${self:provider.stage}.envTag}
+
+
+functions:
+  app:
+    handler: lambda.handler
+    timeout: 15
+    events:
+      - http:
+          path: /
+          method: ANY
+      - http:
+          path: /{PROXY+}
+          method: ANY
+    warmup:
+      default:
+        enabled: true

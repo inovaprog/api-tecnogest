@@ -36,10 +36,10 @@ custom:
     development:
       log_level: INFO
       envTag: development
-      accessKeyId: ${env:accessKeyId}
-      secretAccessKey: ${env:secretAccessKey}
-      clientPoolId: ${env:clientPoolId}
-      poolId: ${env:poolId}
+      ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
+      SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
+      CLIENT_POOL_ID: ${env:CLIENT_POOL_ID}
+      POOL_ID: ${env:POOL_ID}
       DB_NAME: ${env:DB_NAME}
       DB_PASSWORD: ${env:DB_PASSWORD}
       DB_HOST: ${env:DB_HOST}
@@ -75,10 +75,10 @@ provider:
   environment:
     hash_git: ${git:sha1}
     api_version: "1.0"
-    accessKeyId: ${self:custom.stages.${opt:stage}.accessKeyId}
-    secretAccessKey: ${self:custom.stages.${opt:stage}.secretAccessKey}
-    clientPoolId: ${self:custom.stages.${opt:stage}.clientPoolId}
-    poolId: ${self:custom.stages.${opt:stage}.poolId}
+    ACCESS_KEY_ID: ${self:custom.stages.${opt:stage}.ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${self:custom.stages.${opt:stage}.SECRET_ACCESS_KEY}
+    CLIENT_POOL_ID: ${self:custom.stages.${opt:stage}.CLIENT_POOL_ID}
+    POOL_ID: ${self:custom.stages.${opt:stage}.POOL_ID}
     DB_NAME: ${self:custom.stages.${opt:stage}.DB_NAME}
     DB_PASSWORD: ${self:custom.stages.${opt:stage}.DB_PASSWORD}
     DB_HOST: ${self:custom.stages.${opt:stage}.DB_HOST}

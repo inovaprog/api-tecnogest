@@ -87,7 +87,7 @@
         "pino-pretty": "^7.5.1",
         "prettier": "^2.3.2",
         "serverless": "^3.2.1",
-        "serverless-domain-manager": "^5.1.5",
+        "serverless-domain-manager": "^5.8.0",
         "serverless-dotenv-plugin": "^4.0.0",
         "serverless-offline": "^8.2.0",
         "serverless-offline-dotenv": "^0.4.0",

@@ -36,16 +36,6 @@ custom:
     development:
       log_level: INFO
       envTag: development
-      ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
-      SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
-      CLIENT_POOL_ID: ${env:CLIENT_POOL_ID}
-      POOL_ID: ${env:POOL_ID}
-      DB_NAME: ${env:DB_NAME}
-      DB_PASSWORD: ${env:DB_PASSWORD}
-      DB_HOST: ${env:DB_HOST}
-      DB_USER: ${env:DB_USER}
-      DB_PORT: ${env:DB_PORT}
-      COGNITO_ROLE_ARN: ${env:COGNITO_ROLE_ARN}
   serverless-offline:
     allowCache: true
     noPrependStageInUrl: true
@@ -75,15 +65,16 @@ provider:
   environment:
     hash_git: ${git:sha1}
     api_version: "1.0"
-    ACCESS_KEY_ID: ${self:custom.stages.${opt:stage}.ACCESS_KEY_ID}
-    SECRET_ACCESS_KEY: ${self:custom.stages.${opt:stage}.SECRET_ACCESS_KEY}
-    CLIENT_POOL_ID: ${self:custom.stages.${opt:stage}.CLIENT_POOL_ID}
-    POOL_ID: ${self:custom.stages.${opt:stage}.POOL_ID}
-    DB_NAME: ${self:custom.stages.${opt:stage}.DB_NAME}
-    DB_PASSWORD: ${self:custom.stages.${opt:stage}.DB_PASSWORD}
-    DB_HOST: ${self:custom.stages.${opt:stage}.DB_HOST}
-    DB_USER: ${self:custom.stages.${opt:stage}.DB_USER}
-    cognito_role_arn: ${self:custom.stages.${opt:stage}.COGNITO_ROLE_ARN}
+    ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
+    CLIENT_POOL_ID: ${env:CLIENT_POOL_ID}
+    POOL_ID: ${env:POOL_ID}
+    DB_NAME: ${env:DB_NAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_HOST: ${env:DB_HOST}
+    DB_USER: ${env:DB_USER}
+    DB_PORT: ${env:DB_PORT}
+    COGNITO_ROLE_ARN: ${env:COGNITO_ROLE_ARN}
     region: us-east-1
     NODE_ENV: ${self:custom.stages.${self:provider.stage}.envTag}
   stackTags:

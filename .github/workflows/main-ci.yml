@@ -55,13 +55,13 @@ jobs:
       if: github.ref == 'refs/heads/main'
       uses: ozaytsev86/create-env-file@v1
       with:
-        DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
-        DB_HOST: ${{ secrets.DEV_DB_HOST }}
-        DB_NAME: ${{ secrets.DEV_DB_NAME }}
-        DB_PORT: ${{ secrets.DEV_DB_PORT }}
-        DB_USER: ${{ secrets.DEV_DB_USER }}
-        ACCESS_KEY_ID: ${{ secrets.DEV_ACCESS_KEY_ID }}
-        SECRET_ACCESS_KEY: ${{ secrets.DEV_SECRET_ACCESS_KEY }}
+        ENV_DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+        ENV_DB_HOST: ${{ secrets.DEV_DB_HOST }}
+        ENV_DB_NAME: ${{ secrets.DEV_DB_NAME }}
+        ENV_DB_PORT: ${{ secrets.DEV_DB_PORT }}
+        ENV_DB_USER: ${{ secrets.DEV_DB_USER }}
+        ENV_ACCESS_KEY_ID: ${{ secrets.DEV_ACCESS_KEY_ID }}
+        ENV_SECRET_ACCESS_KEY: ${{ secrets.DEV_SECRET_ACCESS_KEY }}
 
     - name: Serverless Deploy Development
       if: github.ref == 'refs/heads/development'

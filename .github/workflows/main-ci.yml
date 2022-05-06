@@ -1,0 +1,74 @@
+name: Workflow API V1
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy:
+    name: Continuous Integration V2
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: cd v2 && npm ci
+
+    - name: Configure AWS profile
+      if: github.ref == 'refs/heads/development'
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.DEV_DEPLOY_AWS_ACCESS_KEY_ID }} --profile default
+        aws configure set aws_secret_access_key ${{ secrets.DEV_DEPLOY_AWS_SECRET_ACCESS_KEY }} --profile default
+
+    - name: Create .env file
+      if: github.ref == 'refs/heads/development'
+      uses: ozaytsev86/create-env-file@v1
+      with:
+        DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DEV_DB_HOST }}
+        DB_NAME: ${{ secrets.DEV_DB_NAME }}
+        DB_PORT: ${{ secrets.DEV_DB_PORT }}
+        DB_USER: ${{ secrets.DEV_DB_USER }}
+        ACCESS_KEY_ID: ${{ secrets.DEV_ACCESS_KEY_ID }}
+        SECRET_ACCESS_KEY: ${{ secrets.DEV_SECRET_ACCESS_KEY }}
+
+    - name: Create .env file
+      if: github.ref == 'refs/heads/main'
+      uses: ozaytsev86/create-env-file@v1
+      with:
+        DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DEV_DB_HOST }}
+        DB_NAME: ${{ secrets.DEV_DB_NAME }}
+        DB_PORT: ${{ secrets.DEV_DB_PORT }}
+        DB_USER: ${{ secrets.DEV_DB_USER }}
+        ACCESS_KEY_ID: ${{ secrets.DEV_ACCESS_KEY_ID }}
+        SECRET_ACCESS_KEY: ${{ secrets.DEV_SECRET_ACCESS_KEY }}
+
+    - name: Serverless Deploy Development
+      if: github.ref == 'refs/heads/development'
+      run: |
+        cd v2 && npx serverless deploy --stage development
+
+    - name: Serverless Deploy Production
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd v2 && npx serverless deploy --stage production

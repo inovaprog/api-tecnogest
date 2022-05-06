@@ -50,6 +50,9 @@ jobs:
         ENV_DB_USER: ${{ secrets.DEV_DB_USER }}
         ENV_ACCESS_KEY_ID: ${{ secrets.DEV_ACCESS_KEY_ID }}
         ENV_SECRET_ACCESS_KEY: ${{ secrets.DEV_SECRET_ACCESS_KEY }}
+        ENV_CLIENT_POOL_ID: ${{ secrets.DEV_CLIENT_POOL_ID }}
+        ENV_POOL_ID: ${{ secrets.DEV_POOL_ID }}
+        ENV_COGNITO_ROLE_ARN: ${{ secrets.DEV_COGNITO_ROLE_ARN }}
 
     - name: Create .env file
       if: github.ref == 'refs/heads/main'
@@ -62,6 +65,9 @@ jobs:
         ENV_DB_USER: ${{ secrets.DEV_DB_USER }}
         ENV_ACCESS_KEY_ID: ${{ secrets.DEV_ACCESS_KEY_ID }}
         ENV_SECRET_ACCESS_KEY: ${{ secrets.DEV_SECRET_ACCESS_KEY }}
+        ENV_CLIENT_POOL_ID: ${{ secrets.DEV_CLIENT_POOL_ID }}
+        ENV_POOL_ID: ${{ secrets.DEV_POOL_ID }}
+        ENV_COGNITO_ROLE_ARN: ${{ secrets.DEV_COGNITO_ROLE_ARN }}
 
     - name: Serverless Deploy Development
       if: github.ref == 'refs/heads/development'

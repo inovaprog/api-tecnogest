@@ -47,7 +47,7 @@ custom:
   customDomain:
     domainName: ${self:custom.stages.${opt:stage}.domain}
     stage: ${opt:stage}
-    basePath: "v2"
+    basePath: "/"
     endpointType: edge
     createRoute53Record: false
     certificateArn: ${self:custom.stages.${opt:stage}.certificate}

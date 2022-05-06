@@ -19,7 +19,7 @@ jobs:
       uses: actions/cache@v2
       env:
         cache-name: cache-node-modules
-      with:
+      with:cd v2 && 
         path: ~/.npm
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
@@ -31,7 +31,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd v2 && npm ci
+    - run: npm ci
 
     - name: Configure AWS profile
       if: github.ref == 'refs/heads/development'
@@ -66,9 +66,9 @@ jobs:
     - name: Serverless Deploy Development
       if: github.ref == 'refs/heads/development'
       run: |
-        cd v2 && npx serverless deploy --stage development
+        npx serverless deploy --stage development
 
     - name: Serverless Deploy Production
       if: github.ref == 'refs/heads/main'
       run: |
-        cd v2 && npx serverless deploy --stage production
+        npx serverless deploy --stage production

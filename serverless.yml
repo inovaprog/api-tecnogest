@@ -47,7 +47,7 @@ custom:
   customDomain:
     domainName: ${self:custom.stages.${opt:stage}.domain}
     stage: ${opt:stage}
-    basePath: "/"
+    basePath: ''
     endpointType: edge
     createRoute53Record: false
     certificateArn: ${self:custom.stages.${opt:stage}.certificate}
@@ -68,7 +68,6 @@ provider:
   apiName: api-tecnogest-${self:provider.stage}
   stage: ${opt:stage, 'development'}
   region: us-east-1
-  lambdaHashingVersion: 20201221
   memorySize: 256
   logRetentionInDays: 14
   logs:

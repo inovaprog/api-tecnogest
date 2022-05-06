@@ -49,7 +49,7 @@ custom:
     stage: ${opt:stage}
     basePath: ''
     endpointType: edge
-    createRoute53Record: false
+    createRoute53Record: true
     certificateArn: ${self:custom.stages.${opt:stage}.certificate}
   serverless-offline:
     allowCache: true

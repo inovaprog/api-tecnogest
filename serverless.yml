@@ -9,6 +9,7 @@ plugins:
   - serverless-offline-dotenv
   - serverless-offline
   - serverless-plugin-git-variables
+  - serverless-domain-manager
   - serverless-prune-plugin
 
 package:
@@ -36,6 +37,20 @@ custom:
     development:
       log_level: INFO
       envTag: development
+      domain: api.dev.tecnogest.com.br
+      certificate: arn:aws:acm:us-east-1:789905563469:certificate/e4b77bba-e18b-47d0-8451-6387dc7069d2
+    production:
+      log_level: INFO
+      envTag: development
+      domain: api.tecnogest.com.br
+      certificate: arn:aws:acm:us-east-1:789905563469:certificate/e4b77bba-e18b-47d0-8451-6387dc7069d2
+  customDomain:
+    domainName: ${self:custom.stages.${opt:stage}.domain}
+    stage: ${opt:stage}
+    basePath: "v2"
+    endpointType: edge
+    createRoute53Record: false
+    certificateArn: ${self:custom.stages.${opt:stage}.certificate}
   serverless-offline:
     allowCache: true
     noPrependStageInUrl: true

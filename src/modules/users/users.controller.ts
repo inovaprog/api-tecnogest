@@ -13,7 +13,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '../../lib/typeorm/entities/user.entity';
-import { query } from 'express';
 import { GetUsersDto } from './dto/get-users.dto';
 
 @Controller('users')

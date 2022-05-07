@@ -1,7 +1,6 @@
 import { AttributeType } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import Cognito from '../../lib/aws/cognito';
 import { User } from '../../lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../lib/typeorm/repositories/user.repository';
@@ -14,7 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(CustomUserRepository, 'default')
     private userRepository: CustomUserRepository,
-  ) { }
+  ) {}
 
   async signUp(signUpDto: SignUpDto) {
     await Cognito.signUp(signUpDto);
@@ -32,9 +31,12 @@ export class UsersService {
   }
 
   async findAll(query?: GetUsersDto) {
-    console.log(query)
+    console.log(query);
     const { page, limit, ...restOfQuery } = query;
-    return await this.userRepository.findPaginated({ page, limit }, restOfQuery);
+    return await this.userRepository.findPaginated(
+      { page, limit },
+      restOfQuery,
+    );
   }
 
   findOne(id: number) {

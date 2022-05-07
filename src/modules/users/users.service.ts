@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Cognito from '../../lib/aws/cognito';
 import { User } from '../../lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../lib/typeorm/repositories/user.repository';
+import { GetUsersDto } from './dto/get-users.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -29,8 +30,12 @@ export class UsersService {
     return createdUser;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(query?: GetUsersDto) {
+    const { page, limit, ...restOfQuery } = query;
+    return await this.userRepository.findPaginated(
+      { page, limit },
+      restOfQuery,
+    );
   }
 
   findOne(id: number) {

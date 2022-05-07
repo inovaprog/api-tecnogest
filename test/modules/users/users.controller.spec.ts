@@ -10,6 +10,7 @@ describe('Users Controller', () => {
 
   const mockService = {
     signUp: jest.fn(),
+    update: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -32,5 +33,13 @@ describe('Users Controller', () => {
     const user = {} as User;
     mockService.signUp.mockResolvedValue(user);
     expect(await controller.signUp(req)).toStrictEqual(user);
+  });
+
+  it('shoud be return a created user', async () => {
+    const req = {} as SignUpDto;
+    const user = {} as User;
+    mockService.signUp.mockResolvedValue(user);
+    mockService.update.mockResolvedValue(user);
+    expect(await controller.create(req)).toStrictEqual(user);
   });
 });

@@ -4,6 +4,7 @@ import Cognito from '../../../src/lib/aws/cognito';
 import { User } from '../../../src/lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../../src/lib/typeorm/repositories/user.repository';
 import { GetUsersDto } from '../../../src/modules/users/dto/get-users.dto';
+import { SignInDto } from '../../../src/modules/users/dto/sign-in.dto';
 import { SignUpDto } from '../../../src/modules/users/dto/sign-up.dto';
 import { UpdateUserDto } from '../../../src/modules/users/dto/update-user.dto';
 import { UsersService } from '../../../src/modules/users/users.service';
@@ -14,6 +15,7 @@ describe('Users Service', () => {
   const mockRepository = {
     save: jest.fn(),
     findPaginated: jest.fn(),
+    findOne: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -43,6 +45,12 @@ describe('Users Service', () => {
     expect(await service.signUp(req)).toStrictEqual(user);
   });
 
+  it('shoud be login the user', async () => {
+    const req = {} as SignInDto;
+    jest.spyOn(Cognito, 'signIn').mockResolvedValueOnce({});
+    expect(await service.signIn(req)).toStrictEqual({});
+  });
+
   it('shoud be return a updated user', async () => {
     const req = {} as UpdateUserDto;
     const user = { id: 1 } as User;
@@ -55,5 +63,11 @@ describe('Users Service', () => {
     const users = [{} as User];
     mockRepository.findPaginated.mockResolvedValueOnce(users);
     expect(await service.findAll(req)).toStrictEqual(users);
+  });
+
+  it('shoud be return one user by id', async () => {
+    const user = {} as User;
+    mockRepository.findOne.mockResolvedValueOnce(user);
+    expect(await service.findOne(1)).toStrictEqual(user);
   });
 });

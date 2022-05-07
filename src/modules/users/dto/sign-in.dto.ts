@@ -1,11 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class SignUpDto {
-  @ApiPropertyOptional()
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+export class SignInDto {
 
   @ApiPropertyOptional()
   @IsString()
@@ -17,9 +13,4 @@ export class SignUpDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  phone: string;
 }

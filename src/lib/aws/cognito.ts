@@ -134,11 +134,11 @@ export default class Cognito {
     }
   }
 
-  static async signIn(username: string, password: string) {
+  static async signIn(email: string, password: string) {
     const input = {
       AuthFlow: 'USER_PASSWORD_AUTH',
       AuthParameters: {
-        USERNAME: username,
+        USERNAME: email,
         PASSWORD: password,
       },
       ClientId: process.env.CLIENT_POOL_ID,
@@ -148,7 +148,7 @@ export default class Cognito {
       const response = await client.send(command);
       return response.AuthenticationResult;
     } catch (error) {
-      const logMsg = `Could not sign in. Username: ${username} - Error: ${error.message}`;
+      const logMsg = `Could not sign in. Username: ${email} - Error: ${error.message}`;
       throw new HttpException(logMsg, HttpStatus.BAD_REQUEST);
     }
   }

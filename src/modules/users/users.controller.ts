@@ -14,6 +14,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '../../lib/typeorm/entities/user.entity';
 import { GetUsersDto } from './dto/get-users.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -23,6 +24,11 @@ export class UsersController {
   @Post('signup')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.usersService.signUp(signUpDto);
+  }
+
+  @Post('signin')
+  signIn(@Body() signInDto: SignInDto) {
+    return this.usersService.signIn(signInDto)
   }
 
   @Post()

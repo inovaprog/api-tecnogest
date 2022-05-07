@@ -28,7 +28,7 @@ export class UsersController {
 
   @Post('signin')
   signIn(@Body() signInDto: SignInDto) {
-    return this.usersService.signIn(signInDto)
+    return this.usersService.signIn(signInDto);
   }
 
   @Post()

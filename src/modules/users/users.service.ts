@@ -17,7 +17,7 @@ export class UsersService {
   ) {}
 
   async signIn(signInDto: SignInDto) {
-    return await Cognito.signIn(signInDto.email, signInDto.password)
+    return await Cognito.signIn(signInDto.email, signInDto.password);
   }
 
   async signUp(signUpDto: SignUpDto) {
@@ -44,7 +44,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.userRepository.findOne(id)
+    return this.userRepository.findOne(id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

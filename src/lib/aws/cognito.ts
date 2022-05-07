@@ -17,6 +17,7 @@ import {
   UpdateUserAttributesCommand,
   VerifyUserAttributeCommandInput,
   VerifyUserAttributeCommand,
+  AdminConfirmSignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 
@@ -28,19 +29,66 @@ const config = {
   region: 'us-east-1',
 };
 
+const client = new CognitoIdentityProviderClient(config);
+
 export default class Cognito {
   private static readonly logger = new Logger(Cognito.name);
+
+  static async signUp(userAttributes: any) {
+    this.logger.log(`Try to sign up user: ${userAttributes.email}`);
+    const input = {
+      ClientId: process.env.CLIENT_POOL_ID,
+      Username: userAttributes.email,
+      Password: userAttributes.password,
+      UserAttributes: [
+        {
+          Name: 'email',
+          Value: userAttributes.email,
+        },
+        {
+          Name: 'name',
+          Value: userAttributes.name,
+        },
+      ],
+      ValidationData: [],
+      UserPoolId: process.env.POOL_ID,
+    };
+    const command = new SignUpCommand(input);
+    try {
+      return await client.send(command);
+    } catch (error) {
+      this.logger.error(
+        `Error in sign up to user: ${userAttributes.username}. Error: ${error.message}`,
+      );
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   static async adminEditCognitoUser(email: string, attrs: AttributeType[]) {
     this.logger.log(
       `Try to update user: ${email} - attributes: ${JSON.stringify(attrs)}`,
     );
     const input = {
       Username: email,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
       UserAttributes: attrs,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new AdminUpdateUserAttributesCommand(input);
+    try {
+      const response = await client.send(command);
+      return response;
+    } catch (error) {
+      this.logger.error(`${error.message}. to user: ${email}`);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static async confirmAccount(email: string) {
+    const input = {
+      Username: email,
+      UserPoolId: process.env.POOL_ID,
+    };
+    const command = new AdminConfirmSignUpCommand(input);
     const response = await client.send(command);
     return response;
   }
@@ -56,10 +104,9 @@ export default class Cognito {
     const input = {
       AccessToken: accessToken,
       Username: email,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
       UserAttributes: attrs,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new UpdateUserAttributesCommand(input);
     const response = await client.send(command);
 
@@ -77,7 +124,6 @@ export default class Cognito {
       AttributeName: attributeName,
       Code: code,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new VerifyUserAttributeCommand(input);
     try {
       const response = await client.send(command);
@@ -95,9 +141,8 @@ export default class Cognito {
         USERNAME: username,
         PASSWORD: password,
       },
-      ClientId: process.env.COGNITO_CLIENT_ID,
+      ClientId: process.env.CLIENT_POOL_ID,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new InitiateAuthCommand(input);
     try {
       const response = await client.send(command);
@@ -108,46 +153,14 @@ export default class Cognito {
     }
   }
 
-  static async signUp(userAttributes: any) {
-    this.logger.log(`Try to sign up user: ${userAttributes.username}`);
-    const input = {
-      ClientId: process.env.COGNITO_CLIENT_ID,
-      Username: userAttributes.username,
-      Password: userAttributes.password,
-      UserAttributes: [
-        {
-          Name: 'email',
-          Value: userAttributes.username,
-        },
-        {
-          Name: 'name',
-          Value: userAttributes.name,
-        },
-      ],
-      ValidationData: [],
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
-    };
-    const client = new CognitoIdentityProviderClient(config);
-    const command = new SignUpCommand(input);
-    try {
-      return await client.send(command);
-    } catch (error) {
-      this.logger.error(
-        `Error in sign up to user: ${userAttributes.username}. Error: ${error.message}`,
-      );
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
-  }
-
   static async refreshSignIn(refreshToken: string) {
     const input: InitiateAuthCommandInput = {
       AuthFlow: 'REFRESH_TOKEN_AUTH',
       AuthParameters: {
         REFRESH_TOKEN: refreshToken,
       },
-      ClientId: process.env.COGNITO_CLIENT_ID,
+      ClientId: process.env.CLIENT_POOL_ID,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new InitiateAuthCommand(input);
     try {
       const response = await client.send(command);
@@ -162,11 +175,10 @@ export default class Cognito {
     this.logger.log(`Try to send code to forgot password to user: ${email}`);
     const input = {
       Username: email,
-      ClientId: process.env.COGNITO_CLIENT_ID,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      ClientId: process.env.CLIENT_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
     };
     try {
-      const client = new CognitoIdentityProviderClient(config);
       const command = new ForgotPasswordCommand(input);
       const response = await client.send(command);
       return response;
@@ -185,11 +197,10 @@ export default class Cognito {
       Username: email,
       ConfirmationCode: code,
       Password: password,
-      ClientId: process.env.COGNITO_CLIENT_ID,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      ClientId: process.env.CLIENT_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
     };
     try {
-      const client = new CognitoIdentityProviderClient(config);
       const command = new ConfirmForgotPasswordCommand(input);
       const response = await client.send(command);
       return response;
@@ -209,7 +220,6 @@ export default class Cognito {
       PreviousPassword: oldPassword,
       ProposedPassword: newPassword,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new ChangePasswordCommand(input);
     const response = await client.send(command);
     return response;
@@ -218,9 +228,8 @@ export default class Cognito {
   static async disableUser(email: string) {
     const input = {
       Username: email,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new AdminDisableUserCommand(input);
     const response = await client.send(command);
     return response;
@@ -230,9 +239,8 @@ export default class Cognito {
     const input = {
       GroupName: group,
       Username: username,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new AdminAddUserToGroupCommand(input);
     const response = await client.send(command);
     return response;
@@ -242,10 +250,9 @@ export default class Cognito {
     this.logger.log(`Try get user from email: ${username}`);
     const input = {
       Username: username,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
     };
     try {
-      const client = new CognitoIdentityProviderClient(config);
       const command = new AdminGetUserCommand(input);
       const response = await client.send(command);
       return response;
@@ -259,9 +266,8 @@ export default class Cognito {
     const input: ConfirmSignUpCommandInput = {
       Username: username,
       ConfirmationCode: code,
-      ClientId: process.env.COGNITO_CLIENT_ID,
+      ClientId: process.env.CLIENT_POOL_ID,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new ConfirmSignUpCommand(input);
     try {
       return await client.send(command);
@@ -277,9 +283,8 @@ export default class Cognito {
     this.logger.log(`Try delete user: ${username}`);
     const input = {
       Username: username,
-      UserPoolId: process.env.COGNITO_USER_POOL_ID,
+      UserPoolId: process.env.POOL_ID,
     };
-    const client = new CognitoIdentityProviderClient(config);
     const command = new AdminDeleteUserCommand(input);
     try {
       return await client.send(command);

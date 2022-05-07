@@ -5,6 +5,7 @@ import Cognito from '../../lib/aws/cognito';
 import { User } from '../../lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../lib/typeorm/repositories/user.repository';
 import { GetUsersDto } from './dto/get-users.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -14,6 +15,10 @@ export class UsersService {
     @InjectRepository(CustomUserRepository, 'default')
     private userRepository: CustomUserRepository,
   ) {}
+
+  async signIn(signInDto: SignInDto) {
+    return await Cognito.signIn(signInDto.email, signInDto.password)
+  }
 
   async signUp(signUpDto: SignUpDto) {
     await Cognito.signUp(signUpDto);
@@ -39,7 +44,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOne(id)
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

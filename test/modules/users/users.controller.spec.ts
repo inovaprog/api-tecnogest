@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { User } from '../../../src/lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../../src/lib/typeorm/repositories/user.repository';
+import { GetUsersDto } from '../../../src/modules/users/dto/get-users.dto';
 import { SignUpDto } from '../../../src/modules/users/dto/sign-up.dto';
 import { UsersController } from '../../../src/modules/users/users.controller';
 import { UsersService } from '../../../src/modules/users/users.service';
@@ -11,6 +12,7 @@ describe('Users Controller', () => {
   const mockService = {
     signUp: jest.fn(),
     update: jest.fn(),
+    findAll: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -41,5 +43,12 @@ describe('Users Controller', () => {
     mockService.signUp.mockResolvedValue(user);
     mockService.update.mockResolvedValue(user);
     expect(await controller.create(req)).toStrictEqual(user);
+  });
+
+  it('shoud be return a list of users', async () => {
+    const req = {} as GetUsersDto;
+    const users = [{} as User];
+    mockService.findAll.mockResolvedValue(users);
+    expect(await controller.findAll(req)).toStrictEqual(users);
   });
 });

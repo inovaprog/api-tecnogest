@@ -31,7 +31,6 @@ export class UsersService {
   }
 
   async findAll(query?: GetUsersDto) {
-    console.log(query);
     const { page, limit, ...restOfQuery } = query;
     return await this.userRepository.findPaginated(
       { page, limit },

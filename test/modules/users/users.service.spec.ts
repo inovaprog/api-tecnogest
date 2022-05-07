@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import Cognito from '../../../src/lib/aws/cognito';
 import { User } from '../../../src/lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../../src/lib/typeorm/repositories/user.repository';
+import { GetUsersDto } from '../../../src/modules/users/dto/get-users.dto';
 import { SignUpDto } from '../../../src/modules/users/dto/sign-up.dto';
 import { UpdateUserDto } from '../../../src/modules/users/dto/update-user.dto';
 import { UsersService } from '../../../src/modules/users/users.service';
@@ -12,6 +13,7 @@ describe('Users Service', () => {
 
   const mockRepository = {
     save: jest.fn(),
+    findPaginated: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -46,5 +48,12 @@ describe('Users Service', () => {
     const user = { id: 1 } as User;
     mockRepository.save.mockResolvedValueOnce(user);
     expect(await service.update(1, req)).toStrictEqual(user);
+  });
+
+  it('shoud be return a list of users', async () => {
+    const req = {} as GetUsersDto;
+    const users = [{} as User];
+    mockRepository.findPaginated.mockResolvedValueOnce(users);
+    expect(await service.findAll(req)).toStrictEqual(users);
   });
 });

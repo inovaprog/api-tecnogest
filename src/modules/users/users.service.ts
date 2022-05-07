@@ -13,10 +13,11 @@ export class UsersService {
   constructor(
     @InjectRepository(CustomUserRepository, 'default')
     private userRepository: CustomUserRepository,
-  ) {}
+  ) { }
 
   async signUp(signUpDto: SignUpDto) {
     await Cognito.signUp(signUpDto);
+    delete signUpDto.password;
     await Cognito.confirmAccount(signUpDto.email);
     const createdUser: User = await this.userRepository.save(signUpDto);
     const attributes: AttributeType[] = [
@@ -42,7 +43,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.userRepository.save({ id, ...updateUserDto });
   }
 
   remove(id: number) {

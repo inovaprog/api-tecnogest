@@ -8,7 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -26,7 +25,7 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUser: SignUpDto) {
-    const user : User = await this.usersService.signUp(createUser);
+    const user: User = await this.usersService.signUp(createUser);
     user.forceUpdateFields = ['password'];
     return this.usersService.update(user.id, user);
   }

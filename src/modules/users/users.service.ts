@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Cognito from '../../lib/aws/cognito';
 import { User } from '../../lib/typeorm/entities/user.entity';
 import { CustomUserRepository } from '../../lib/typeorm/repositories/user.repository';
-import { CreateUserDto } from './dto/create-user.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -13,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(CustomUserRepository, 'default')
     private userRepository: CustomUserRepository,
-  ) { }
+  ) {}
 
   async signUp(signUpDto: SignUpDto) {
     await Cognito.signUp(signUpDto);
@@ -28,10 +27,6 @@ export class UsersService {
     ];
     await Cognito.adminEditCognitoUser(createdUser.email, attributes);
     return createdUser;
-  }
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
   }
 
   findAll() {

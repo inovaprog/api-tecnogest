@@ -36,6 +36,7 @@ describe('Users Service', () => {
     jest
       .spyOn(Cognito, 'adminEditCognitoUser')
       .mockResolvedValueOnce(resultCognito);
+    jest.spyOn(Cognito, 'confirmAccount').mockResolvedValueOnce(resultCognito);
     expect(await service.signUp(req)).toStrictEqual(user);
   });
 });

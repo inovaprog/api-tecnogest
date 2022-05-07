@@ -17,10 +17,11 @@ export class UsersService {
 
   async signUp(signUpDto: SignUpDto) {
     await Cognito.signUp(signUpDto);
+    await Cognito.confirmAccount(signUpDto.email);
     const createdUser: User = await this.userRepository.save(signUpDto);
     const attributes: AttributeType[] = [
       {
-        Name: 'userId',
+        Name: 'custom:userId',
         Value: createdUser.id.toString(),
       },
     ];

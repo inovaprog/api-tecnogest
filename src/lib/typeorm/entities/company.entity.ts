@@ -14,16 +14,16 @@ export class Company {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text', { unique: true })
+  @Column('varchar', { unique: true, length: 100 })
   name: string;
 
   @Column('int', { nullable: true })
   seats: number;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 15 })
   primaryColor: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 15 })
   secondaryColor: string;
 
   @OneToMany(() => User, (user) => user.company, { cascade: true })

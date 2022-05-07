@@ -26,19 +26,19 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text', { nullable: false })
+  @Column('varchar', { nullable: false, length: 100 })
   name: string;
 
-  @Column('text', { nullable: false })
+  @Column('varchar', { nullable: false, length: 100 })
   email: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 30 })
   dateOfBirth: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 30 })
   plan: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 30 })
   phone: string;
 
   @Column('timestamp', { nullable: true })
@@ -47,28 +47,28 @@ export class User {
   @Column('simple-array', { nullable: true })
   forceUpdateFields: string[];
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 100 })
   street: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 10 })
   number: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 100 })
   neighborhood: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 100 })
   city: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 100 })
   state: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 100 })
   country: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 30 })
   zip: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 100 })
   complement: string;
 
   @ManyToOne(() => User, (user) => user.parent)

@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '../../lib/typeorm/entities/user.entity';
+import { query } from 'express';
+import { GetUsersDto } from './dto/get-users.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -31,8 +34,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() query: GetUsersDto) {
+    return this.usersService.findAll(query);
   }
 
   @Get(':id')

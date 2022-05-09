@@ -45,7 +45,7 @@ export const handler: Handler = async (event: any, context: Context, callback: a
     const logger = new Logger('Handler');
     const server = await bootstrapServer();
 
-    if (event.source === 'warmup-lambda-dynamoDB-cognito') {
+    if (event.source === 'warmup-lambda') {
         const response: {
             statusCode: number;
             body: any;

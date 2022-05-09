@@ -27,6 +27,8 @@ custom:
   warmup:
     default:
       enabled: true
+      payload:
+        source: warmup-lambda
       events:
         - schedule: rate(5 minutes)
       prewarm: true
